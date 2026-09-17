@@ -3,12 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <title>하루기록</title>
+
+    <link rel="stylesheet" href="style.css" />
   </head>
 
   <body>
     <!--
-      사용자: 하루의 목표나 할 일을 간단하게 기록하고 싶은 사람
-      목적: 해야 할 일을 정리하고 하루의 계획을 쉽게 관리하기
+      사용자: 하루의 목표나 할 일을 기록하고 싶은 사람
+      목적: 해야 할 일을 정리하고 하루 계획을 관리하기
       핵심 행동: 오늘의 목표를 입력하고 확인하기
       정보 순서: 서비스 소개 → 주요 기능 → 이용 방법 → 목표 입력
     -->
@@ -17,7 +19,6 @@
       <h1>하루기록</h1>
       <p>오늘 해야 할 일을 간단하게 기록하고 관리해 보세요.</p>
 
-      <!-- 페이지 내부 이동 -->
       <nav>
         <a href="#intro">서비스 소개</a>
         <a href="#features">주요 기능</a>
@@ -27,9 +28,9 @@
     </header>
 
     <main>
-      <!-- 서비스 소개 -->
       <section id="intro">
         <h2>서비스 소개</h2>
+
         <p>
           하루기록은 오늘 해야 할 일이나 목표를 간단하게 작성하고 확인할 수 있는
           서비스입니다. 복잡한 기능 없이 필요한 내용만 기록할 수 있도록
@@ -39,12 +40,9 @@
         <img
           src="img/service-image.png"
           alt="오늘의 목표를 작성하는 하루기록 서비스 화면"
-          width="500"
         />
-        <p>이미지 출처 : Chat GPT</p>
       </section>
 
-      <!-- 주요 기능 -->
       <section id="features">
         <h2>주요 기능</h2>
 
@@ -55,7 +53,6 @@
         </ul>
       </section>
 
-      <!-- 이용 방법 -->
       <section id="howto">
         <h2>이용 방법</h2>
 
@@ -66,12 +63,12 @@
         </ol>
       </section>
 
-      <!-- 최소 입력 영역 -->
       <section id="record">
         <h2>오늘의 목표</h2>
 
         <form>
           <label for="goal">오늘 해야 할 일을 입력하세요.</label>
+
           <input
             type="text"
             id="goal"
@@ -86,7 +83,6 @@
 
     <footer>
       <p>하루기록과 함께 오늘도 하나씩 시작해 보세요.</p>
-
       <a href="#">맨 위로 이동</a>
     </footer>
   </body>
