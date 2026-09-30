@@ -72,7 +72,7 @@
       <section id="record">
         <h2>오늘의 목표</h2>
 
-        <form class="goal-form">
+        <form class="goal-form" id="goalForm">
           <label for="goal">오늘 해야 할 일을 입력하세요.</label>
 
           <div class="input-area">
@@ -83,8 +83,10 @@
               placeholder="예: 운동 30분 하기"
             />
 
-            <button type="submit">등록하기</button>
+            <button type="button" id="goalButton">등록하기</button>
           </div>
+
+          <p id="goalMessage"></p>
         </form>
       </section>
 
@@ -96,7 +98,7 @@
         <form class="email-form">
           <input type="email" placeholder="이메일을 입력하세요" />
 
-          <button type="submit">신청하기</button>
+          <button type="button">신청하기</button>
         </form>
       </section>
     </main>
@@ -105,5 +107,6 @@
       <p>하루기록과 함께 오늘도 하나씩 시작해 보세요.</p>
       <a href="#">맨 위로 이동</a>
     </footer>
+    <script src="script.js"></script>
   </body>
 </html>
