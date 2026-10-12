@@ -214,3 +214,106 @@ footer a {
   opacity: 0.6;
   cursor: not-allowed;
 }
+/* 목표 탭 */
+.goal-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.tab-button {
+  flex: 1;
+  background-color: #e8f1ea;
+  color: #315c3b;
+  border: 1px solid #d0dfd3;
+}
+
+.tab-button:hover {
+  background-color: #dfeee2;
+}
+
+.tab-button.active {
+  background-color: #4f7959;
+  color: white;
+  font-weight: bold;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+.goal-type-area {
+  margin-top: 20px;
+}
+
+.goal-type-area select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #bbb;
+  border-radius: 5px;
+  background-color: white;
+}
+
+#typeMessage {
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+#typeMessage.success {
+  color: green;
+}
+
+#typeMessage.error {
+  color: red;
+}
+
+.completed-button {
+  background-color: #315c3b;
+}
+
+#completeButton {
+  margin-top: 10px;
+}
+
+#completeButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.complete-message {
+  font-weight: bold;
+  color: green;
+}
+
+@media (max-width: 768px) {
+  .goal-tabs {
+    flex-direction: column;
+  }
+
+  .goal-tabs button {
+    width: 100%;
+  }
+
+  .goal-type-area select {
+    width: 100%;
+  }
+}
+
+@media (max-width: 390px) {
+  .goal-tabs {
+    gap: 7px;
+  }
+
+  .tab-button {
+    padding: 9px;
+    font-size: 14px;
+  }
+
+  #record {
+    padding: 15px;
+  }
+}
