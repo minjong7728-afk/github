@@ -170,9 +170,22 @@
             <p id="completeGoal"></p>
             <p id="completeType"></p>
 
-            <button type="button" id="restartButton">새 목표 시작하기</button>
+            <p id="saveMessage" class="info"></p>
+
+            <div class="button-area">
+              <button type="button" id="saveButton">완료한 목표 저장하기</button>
+              <button type="button" id="restartButton">새 목표 시작하기</button>
+            </div>
           </div>
         </div>
+      </section>
+
+      <section id="history">
+        <h2>나의 목표 기록</h2>
+        <p>완료한 목표를 저장하고 다시 확인할 수 있습니다.</p>
+
+        <p id="historyMessage" class="info">아직 저장한 목표가 없습니다.</p>
+        <div id="historyList"></div>
       </section>
 
       <section id="email">

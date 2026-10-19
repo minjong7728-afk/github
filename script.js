@@ -9,6 +9,10 @@ const confirmButton = document.querySelector("#confirmButton");
 const backButton = document.querySelector("#backButton");
 const completeButton = document.querySelector("#completeButton");
 const restartButton = document.querySelector("#restartButton");
+const saveButton = document.querySelector("#saveButton");
+const saveMessage = document.querySelector("#saveMessage");
+const historyMessage = document.querySelector("#historyMessage");
+const historyList = document.querySelector("#historyList");
 
 const startStep = document.querySelector("#startStep");
 const inputStep = document.querySelector("#inputStep");
@@ -26,6 +30,8 @@ const tabContents = document.querySelectorAll(".tab-content");
 
 let started = false;
 let completed = false;
+let saved = false;
+let history = [];
 
 // 탭 열기
 function openTab(tabName) {
@@ -142,6 +148,9 @@ backButton.addEventListener("click", function () {
 // 3단계 → 완료
 completeButton.addEventListener("click", function () {
   completed = true;
+  saved = false;
+  saveButton.disabled = false;
+  saveMessage.textContent = "";
 
   completeGoal.textContent = `완료한 목표 : ${goalInput.value.trim()}`;
 
@@ -154,6 +163,67 @@ completeButton.addEventListener("click", function () {
   openTab("progress");
 });
 
+// 저장한 목표 목록 표시
+function showHistory() {
+  historyList.textContent = "";
+
+  if (history.length === 0) {
+    historyMessage.textContent = "아직 저장한 목표가 없습니다. 목표를 완료한 후 저장해보세요.";
+    return;
+  }
+
+  historyMessage.textContent = `저장한 목표 ${history.length}개`;
+
+  history.forEach(function (item) {
+    const historyItem = document.createElement("div");
+    historyItem.className = "history-item";
+
+    const historyText = document.createElement("p");
+    historyText.textContent = `${item.goal} (${item.type})`;
+
+    const deleteButton = document.createElement("button");
+    deleteButton.type = "button";
+    deleteButton.textContent = "삭제";
+
+    deleteButton.addEventListener("click", function () {
+      history = history.filter(function (savedItem) {
+        return savedItem.id !== item.id;
+      });
+
+      showHistory();
+      historyMessage.textContent = "목표를 삭제했습니다. 남은 목표: " + history.length + "개";
+    });
+
+    historyItem.appendChild(historyText);
+    historyItem.appendChild(deleteButton);
+    historyList.appendChild(historyItem);
+  });
+}
+
+// 완료한 목표 저장하기
+saveButton.addEventListener("click", function () {
+  if (!completed) {
+    saveMessage.textContent = "먼저 목표를 완료해주세요.";
+    return;
+  }
+
+  if (saved) {
+    saveMessage.textContent = "이미 저장한 목표입니다. 나의 목표 기록에서 확인해주세요.";
+    return;
+  }
+
+  history.push({
+    id: Date.now(),
+    goal: goalInput.value.trim(),
+    type: goalType.value,
+  });
+
+  saved = true;
+  saveButton.disabled = true;
+  saveMessage.textContent = "목표를 저장했습니다. 아래 나의 목표 기록에서 확인할 수 있습니다.";
+  showHistory();
+});
+
 // 다시 시작
 restartButton.addEventListener("click", function () {
   // 입력값 초기화
@@ -163,6 +233,9 @@ restartButton.addEventListener("click", function () {
   // 상태 초기화
   started = false;
   completed = false;
+  saved = false;
+  saveButton.disabled = false;
+  saveMessage.textContent = "";
 
   // 오류 / 안내 문구 초기화
   goalMessage.textContent = "목표를 입력해주세요.";
@@ -248,3 +321,6 @@ tabButtons.forEach(function (button) {
     }
   });
 });
+
+// 처음 목록 표시
+showHistory();
