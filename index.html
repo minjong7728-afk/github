@@ -107,11 +107,13 @@
                   id="goal"
                   name="goal"
                   maxlength="30"
+                  aria-describedby="goalMessage"
                   placeholder="예: 운동 30분 하기"
                 />
               </div>
 
-              <p id="goalMessage" class="error">목표를 입력해주세요.</p>
+              <p class="help">목표는 3자 이상, 30자 이하로 입력해주세요.</p>
+              <p id="goalMessage" class="error" aria-live="polite">목표를 입력해주세요.</p>
 
               <div class="goal-type-area">
                 <label for="goalType"> 목표 종류를 선택하세요. </label>
@@ -126,7 +128,19 @@
 
               <p id="typeMessage" class="error">목표 종류를 선택해주세요.</p>
 
-              <button type="button" id="confirmButton" disabled>
+              <div class="goal-type-area">
+                <label class="check-label" for="useTime">
+                  <input type="checkbox" id="useTime" /> 목표 시간도 정하기 (선택)
+                </label>
+                <p class="help">체크하면 목표를 실천할 시간을 입력할 수 있습니다.</p>
+                <div id="timeArea" class="hidden">
+                  <label for="goalTime">목표 시간</label>
+                  <input type="time" id="goalTime" disabled />
+                  <p id="timeMessage" class="error" aria-live="polite"></p>
+                </div>
+              </div>
+              <p id="submitMessage" class="info" aria-live="polite"></p>
+              <button type="submit" id="confirmButton">
                 목표 확인하기
               </button>
             </form>
@@ -151,6 +165,7 @@
               </p>
 
               <p id="confirmType"></p>
+              <p id="confirmTime"></p>
             </div>
 
             <div class="button-area">
@@ -169,6 +184,7 @@
 
             <p id="completeGoal"></p>
             <p id="completeType"></p>
+            <p id="completeTime"></p>
 
             <p id="saveMessage" class="info"></p>
 

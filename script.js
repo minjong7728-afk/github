@@ -1,5 +1,13 @@
 const goalInput = document.querySelector("#goal");
 const goalType = document.querySelector("#goalType");
+const goalForm = document.querySelector("#goalForm");
+const useTime = document.querySelector("#useTime");
+const goalTime = document.querySelector("#goalTime");
+const timeArea = document.querySelector("#timeArea");
+const timeMessage = document.querySelector("#timeMessage");
+const submitMessage = document.querySelector("#submitMessage");
+const confirmTime = document.querySelector("#confirmTime");
+const completeTime = document.querySelector("#completeTime");
 
 const goalMessage = document.querySelector("#goalMessage");
 const typeMessage = document.querySelector("#typeMessage");
@@ -55,7 +63,7 @@ function isFormValid() {
   const goal = goalInput.value.trim();
   const type = goalType.value;
 
-  return goal !== "" && type !== "";
+  return goal.length >= 3 && type !== "" && (!useTime.checked || goalTime.value !== "");
 }
 
 // 입력 상태 검사
@@ -63,8 +71,8 @@ function validateForm() {
   const goal = goalInput.value.trim();
 
   // 목표 입력 확인
-  if (goal === "") {
-    goalMessage.textContent = "목표를 입력해주세요.";
+  if (goal.length < 3) {
+    goalMessage.textContent = goal.length === 0 ? "목표를 입력해주세요." : "목표는 3자 이상 입력해주세요. 현재 " + goal.length + "자입니다.";
     goalMessage.className = "error";
   } else {
     goalMessage.textContent = `현재 ${goal.length}자 입력했습니다.`;
@@ -83,8 +91,12 @@ function validateForm() {
     typeMessage.className = "success";
   }
 
-  // 두 항목이 모두 입력된 경우에만 활성화
-  confirmButton.disabled = !isFormValid();
+  if (useTime.checked && goalTime.value === "") {
+    timeMessage.textContent = "목표 시간을 선택해주세요. 또는 체크를 해제해주세요.";
+  } else {
+    timeMessage.textContent = "";
+  }
+  submitMessage.textContent = "";
 }
 
 // 확인 화면 내용 갱신
@@ -92,6 +104,7 @@ function updateConfirm() {
   confirmGoal.textContent = goalInput.value.trim();
 
   confirmType.textContent = goalType.value;
+  confirmTime.textContent = useTime.checked ? "목표 시간 : " + goalTime.value : "목표 시간 : 설정 안 함";
 }
 
 // 1단계 : 시작하기
@@ -116,21 +129,48 @@ goalType.addEventListener("change", function () {
   validateForm();
 });
 
-// 2단계 → 3단계
-confirmButton.addEventListener("click", function () {
+// 목표 시간 선택
+useTime.addEventListener("change", function () {
+  timeArea.classList.toggle("hidden", !useTime.checked);
+  goalTime.disabled = !useTime.checked;
+  if (!useTime.checked) goalTime.value = "";
+  validateForm();
+});
+goalTime.addEventListener("change", validateForm);
+
+// 목표 작성 폼 제출
+let submitting = false;
+goalForm.addEventListener("submit", function (event) {
+  event.preventDefault();
+  validateForm();
+  if (submitting) return;
   if (!isFormValid()) {
-    flowNotice.textContent = "목표와 목표 종류를 모두 입력해주세요.";
-
-    flowNotice.className = "error";
-
+    submitMessage.textContent = "입력 내용을 확인해주세요. 목표는 3자 이상, 종류는 필수이며 시간 선택 시 시간도 입력해야 합니다.";
+    submitMessage.className = "error";
     return;
   }
+  submitting = true;
+  confirmButton.disabled = true;
+  submitMessage.textContent = "목표를 등록하는 중입니다...";
+  submitMessage.className = "info";
 
-  flowNotice.textContent = "";
-
-  updateConfirm();
-
-  openTab("check");
+  // 브라우저 저장 공간 사용이 막히면 입력값을 유지하고 재시도 안내
+  try {
+    sessionStorage.setItem("haruGoalDraft", JSON.stringify({
+      goal: goalInput.value.trim(), type: goalType.value,
+      time: useTime.checked ? goalTime.value : ""
+    }));
+    updateConfirm();
+    flowNotice.textContent = "";
+    submitMessage.textContent = "목표가 등록되었습니다.";
+    openTab("check");
+  } catch (error) {
+    submitMessage.textContent = "등록에 실패했습니다. 브라우저 저장 기능을 확인하고 다시 시도해주세요. 입력한 내용은 유지됩니다.";
+    submitMessage.className = "error";
+  } finally {
+    submitting = false;
+    confirmButton.disabled = false;
+  }
 });
 
 // 이전 단계
@@ -155,6 +195,7 @@ completeButton.addEventListener("click", function () {
   completeGoal.textContent = `완료한 목표 : ${goalInput.value.trim()}`;
 
   completeType.textContent = `목표 종류 : ${goalType.value}`;
+  completeTime.textContent = confirmTime.textContent;
 
   completeMessage.textContent = "오늘의 목표를 완료했습니다!";
 
@@ -179,7 +220,7 @@ function showHistory() {
     historyItem.className = "history-item";
 
     const historyText = document.createElement("p");
-    historyText.textContent = `${item.goal} (${item.type})`;
+    historyText.textContent = `${item.goal} (${item.type})` + (item.time ? " / " + item.time : "");
 
     const deleteButton = document.createElement("button");
     deleteButton.type = "button";
@@ -216,6 +257,7 @@ saveButton.addEventListener("click", function () {
     id: Date.now(),
     goal: goalInput.value.trim(),
     type: goalType.value,
+    time: useTime.checked ? goalTime.value : "",
   });
 
   saved = true;
@@ -229,6 +271,14 @@ restartButton.addEventListener("click", function () {
   // 입력값 초기화
   goalInput.value = "";
   goalType.value = "";
+  useTime.checked = false;
+  goalTime.value = "";
+  goalTime.disabled = true;
+  timeArea.classList.add("hidden");
+  timeMessage.textContent = "";
+  submitMessage.textContent = "";
+  submitMessage.className = "info";
+  try { sessionStorage.removeItem("haruGoalDraft"); } catch (error) {}
 
   // 상태 초기화
   started = false;
@@ -250,7 +300,7 @@ restartButton.addEventListener("click", function () {
   flowNotice.className = "";
 
   // 버튼 초기화
-  confirmButton.disabled = true;
+  confirmButton.disabled = false;
 
   // 확인 화면 초기화
   confirmGoal.textContent = "";
@@ -259,6 +309,8 @@ restartButton.addEventListener("click", function () {
   // 완료 화면 초기화
   completeGoal.textContent = "";
   completeType.textContent = "";
+  completeTime.textContent = "";
+  confirmTime.textContent = "";
 
   completeMessage.textContent = "오늘의 목표를 완료했습니다.";
 
@@ -283,7 +335,7 @@ tabButtons.forEach(function (button) {
 
     // 목표 확인
     if (target === "check") {
-      if (!started || !isFormValid()) {
+      if (!started || !completed && !isFormValid()) {
         openTab("write");
 
         if (!started) {
@@ -297,7 +349,7 @@ tabButtons.forEach(function (button) {
         return;
       }
 
-      updateConfirm();
+      if (!completed) updateConfirm();
 
       flowNotice.textContent = "";
 

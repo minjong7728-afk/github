@@ -491,3 +491,13 @@ button:disabled {
     width: 100%;
   }
 }
+
+/* 9주차 목표 시간 입력 */
+.check-label { display:flex; align-items:center; gap:10px; cursor:pointer; }
+.check-label input { flex:none; width:auto; min-width:auto; }
+.help { color:#555; font-size:14px; margin:6px 0 10px; }
+#timeArea { margin-top:12px; }
+#timeArea.hidden { display:none; }
+#goalTime { width:100%; max-width:300px; }
+#submitMessage { font-weight:bold; }
+@media(max-width:768px) { #goalTime { max-width:100%; } }
