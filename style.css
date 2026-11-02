@@ -501,3 +501,24 @@ button:disabled {
 #goalTime { width:100%; max-width:300px; }
 #submitMessage { font-weight:bold; }
 @media(max-width:768px) { #goalTime { max-width:100%; } }
+
+/* 10주차: 접근 가능한 내비게이션과 목표 목록 필터 */
+.nav-list { display:flex; justify-content:center; flex-wrap:wrap; gap:8px; list-style:none; margin:0; padding:0; }
+.nav-list li { margin:0; }
+.nav-list a { display:block; padding:9px 13px; margin:0; border-radius:6px; }
+.nav-list a.current, .nav-list a[aria-current="location"] { background:#315c3b; color:white; }
+.nav-list a:focus-visible, button:focus-visible { outline:3px solid #e0a830; outline-offset:3px; }
+.menu-toggle { display:none; }
+.history-filters { display:flex; flex-wrap:wrap; gap:8px; margin:16px 0; }
+.filter-button { background:#e8f1ea; color:#315c3b; border:1px solid #b9d3bf; }
+.filter-button.active, .filter-button[aria-pressed="true"] { background:#315c3b; color:white; }
+#historyCount { font-weight:bold; }
+@media (max-width:768px) {
+  .menu-toggle { display:block; width:100%; max-width:360px; margin:18px auto 0; }
+  #mainNav { display:none; margin-top:12px; }
+  #mainNav.menu-open { display:block; }
+  .nav-list { flex-direction:column; gap:4px; }
+  .nav-list a { width:100%; }
+  .history-filters { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .history-filters button { min-width:0; }
+}

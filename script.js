@@ -40,6 +40,66 @@ let started = false;
 let completed = false;
 let saved = false;
 let history = [];
+let selectedFilter = "전체";
+
+// 10주차: 메뉴 이동, 현재 위치 및 모바일 메뉴
+const menuToggle = document.querySelector("#menuToggle");
+const mainNav = document.querySelector("#mainNav");
+const navLinks = Array.from(mainNav.querySelectorAll('a[href^="#"]'));
+const menuSections = navLinks.map((link) => document.querySelector(link.getAttribute("href")));
+const mobileQuery = window.matchMedia("(max-width: 768px)");
+
+function setMenuOpen(open) {
+  const shouldOpen = mobileQuery.matches && open;
+  mainNav.classList.toggle("menu-open", shouldOpen);
+  menuToggle.setAttribute("aria-expanded", String(shouldOpen));
+  menuToggle.textContent = shouldOpen ? "메뉴 닫기" : "메뉴 열기";
+}
+menuToggle.addEventListener("click", () => setMenuOpen(!mainNav.classList.contains("menu-open")));
+navLinks.forEach((link) => link.addEventListener("click", () => {
+  setCurrentNav(link.getAttribute("href"));
+  setMenuOpen(false);
+}));
+mobileQuery.addEventListener("change", () => setMenuOpen(false));
+
+function setCurrentNav(hash) {
+  const validHash = navLinks.some((link) => link.getAttribute("href") === hash) ? hash : "#intro";
+  navLinks.forEach((link) => {
+    const current = link.getAttribute("href") === validHash;
+    link.classList.toggle("current", current);
+    if (current) link.setAttribute("aria-current", "location");
+    else link.removeAttribute("aria-current");
+  });
+}
+function syncNavWithLocation() {
+  setCurrentNav(window.location.hash || "#intro");
+  setMenuOpen(false);
+}
+window.addEventListener("hashchange", syncNavWithLocation);
+window.addEventListener("popstate", syncNavWithLocation);
+// 페이지를 직접 스크롤한 경우에도 현재 보이는 영역과 메뉴 표시 동기화
+let scrollPending = false;
+window.addEventListener("scroll", () => {
+  if (scrollPending) return;
+  scrollPending = true;
+  window.requestAnimationFrame(() => {
+    scrollPending = false;
+    let current = "#intro";
+    const position = window.scrollY + 140;
+    menuSections.forEach((section) => {
+      if (section && section.offsetTop <= position) current = "#" + section.id;
+    });
+    setCurrentNav(current);
+  });
+}, { passive: true });
+syncNavWithLocation();
+
+const filterButtons = document.querySelectorAll(".filter-button");
+const historyCount = document.querySelector("#historyCount");
+filterButtons.forEach((button) => button.addEventListener("click", () => {
+  selectedFilter = button.dataset.filter;
+  showHistory();
+}));
 
 // 탭 열기
 function openTab(tabName) {
@@ -207,15 +267,26 @@ completeButton.addEventListener("click", function () {
 // 저장한 목표 목록 표시
 function showHistory() {
   historyList.textContent = "";
+  filterButtons.forEach((button) => {
+    const selected = button.dataset.filter === selectedFilter;
+    button.classList.toggle("active", selected);
+    button.setAttribute("aria-pressed", String(selected));
+  });
 
+  const filteredHistory = selectedFilter === "전체"
+    ? history
+    : history.filter((item) => item.type === selectedFilter);
+  historyCount.textContent = `표시 중인 목표 ${filteredHistory.length}개 (전체 ${history.length}개)`;
   if (history.length === 0) {
     historyMessage.textContent = "아직 저장한 목표가 없습니다. 목표를 완료한 후 저장해보세요.";
     return;
   }
-
-  historyMessage.textContent = `저장한 목표 ${history.length}개`;
-
-  history.forEach(function (item) {
+  if (filteredHistory.length === 0) {
+    historyMessage.textContent = `${selectedFilter} 종류에 해당하는 기록이 없습니다. 다른 필터를 선택해보세요.`;
+    return;
+  }
+  historyMessage.textContent = `${selectedFilter} 목표 ${filteredHistory.length}개를 표시합니다.`;
+  filteredHistory.forEach(function (item) {
     const historyItem = document.createElement("div");
     historyItem.className = "history-item";
 
@@ -225,16 +296,11 @@ function showHistory() {
     const deleteButton = document.createElement("button");
     deleteButton.type = "button";
     deleteButton.textContent = "삭제";
-
+    deleteButton.setAttribute("aria-label", `${item.goal} 기록 삭제`);
     deleteButton.addEventListener("click", function () {
-      history = history.filter(function (savedItem) {
-        return savedItem.id !== item.id;
-      });
-
+      history = history.filter((savedItem) => savedItem.id !== item.id);
       showHistory();
-      historyMessage.textContent = "목표를 삭제했습니다. 남은 목표: " + history.length + "개";
     });
-
     historyItem.appendChild(historyText);
     historyItem.appendChild(deleteButton);
     historyList.appendChild(historyItem);

@@ -14,11 +14,15 @@
       <h1>하루기록</h1>
       <p>오늘 해야 할 일을 간단하게 기록하고 관리해 보세요.</p>
 
-      <nav>
-        <a href="#intro">서비스 소개</a>
-        <a href="#features">주요 기능</a>
-        <a href="#howto">이용 방법</a>
-        <a href="#record">목표 작성</a>
+      <button type="button" id="menuToggle" class="menu-toggle" aria-controls="mainNav" aria-expanded="false">메뉴 열기</button>
+      <nav id="mainNav" aria-label="주요 메뉴">
+        <ul class="nav-list">
+          <li><a href="#intro" aria-current="location">서비스 소개</a></li>
+          <li><a href="#features">주요 기능</a></li>
+          <li><a href="#howto">이용 방법</a></li>
+          <li><a href="#record">목표 작성</a></li>
+          <li><a href="#history">목표 기록</a></li>
+        </ul>
       </nav>
     </header>
 
@@ -200,6 +204,13 @@
         <h2>나의 목표 기록</h2>
         <p>완료한 목표를 저장하고 다시 확인할 수 있습니다.</p>
 
+        <div class="history-filters" role="group" aria-label="목표 종류 필터">
+          <button type="button" class="filter-button active" data-filter="전체" aria-pressed="true">전체</button>
+          <button type="button" class="filter-button" data-filter="공부" aria-pressed="false">공부</button>
+          <button type="button" class="filter-button" data-filter="운동" aria-pressed="false">운동</button>
+          <button type="button" class="filter-button" data-filter="생활" aria-pressed="false">생활</button>
+        </div>
+        <p id="historyCount" class="info" role="status" aria-live="polite">표시 중인 목표 0개</p>
         <p id="historyMessage" class="info">아직 저장한 목표가 없습니다.</p>
         <div id="historyList"></div>
       </section>
