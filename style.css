@@ -522,3 +522,36 @@ button:disabled {
   .history-filters { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }
   .history-filters button { min-width:0; }
 }
+
+/* 11주차 웹 접근성: 색 대비, 초점, 상태 문구, 읽기 쉬운 입력 폼 */
+:root { color-scheme: light; }
+body { color:#222b25; }
+.help { color:#38443b; }
+.info { color:#23482d; }
+.error { color:#a11919; font-weight:700; }
+.success { color:#145a30; font-weight:700; }
+button { background-color:#315c3b; }
+button:hover { background-color:#23442c; }
+button:disabled { opacity:.65; }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible,
+textarea:focus-visible, [tabindex="-1"]:focus-visible {
+  outline:3px solid #1d4ed8; outline-offset:3px;
+}
+input, select, button { font:inherit; }
+input, select { color:#1f2937; background:#fff; border:2px solid #59685e; }
+input[aria-invalid="true"],select[aria-invalid="true"] { border:2px solid #a11919; }
+.nav-list a.current::before { content:"현재 위치 · "; font-size:.85em; }
+.filter-button.active::before { content:"✓ "; }
+.tab-button.active::before { content:"✓ "; }
+.skip-link { position:absolute; top:-90px; left:12px; z-index:100; padding:12px 18px;
+  background:#173b23; color:#fff; font-weight:700; border-radius:6px; }
+.skip-link:focus { top:10px; }
+.email-form { align-items:center; }
+.email-form label { flex:none; margin:0; font-weight:700; }
+.email-form button { flex:none; }
+#historyMessage { min-height:1.5em; }
+@media(max-width:768px){.email-form {align-items:stretch;} .email-form label {text-align:left;} }
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;}}
+
+.filter-button:hover,.tab-button:hover {background:#d5e9d9;color:#23442c;}
+.filter-button.active:hover,.tab-button.active:hover {background:#23442c;color:white;}

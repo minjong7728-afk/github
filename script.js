@@ -105,6 +105,7 @@ filterButtons.forEach((button) => button.addEventListener("click", () => {
 function openTab(tabName) {
   tabButtons.forEach(function (button) {
     button.classList.remove("active");
+    button.setAttribute("aria-pressed", String(button.dataset.tab === tabName));
 
     if (button.dataset.tab === tabName) {
       button.classList.add("active");
@@ -132,29 +133,35 @@ function validateForm() {
 
   // 목표 입력 확인
   if (goal.length < 3) {
-    goalMessage.textContent = goal.length === 0 ? "목표를 입력해주세요." : "목표는 3자 이상 입력해주세요. 현재 " + goal.length + "자입니다.";
+    goalMessage.textContent = goal.length === 0 ? "오류: 목표를 입력해주세요." : "오류: 목표는 3자 이상 입력해주세요. 현재 " + goal.length + "자입니다.";
     goalMessage.className = "error";
+    goalInput.setAttribute("aria-invalid", "true");
   } else {
-    goalMessage.textContent = `현재 ${goal.length}자 입력했습니다.`;
+    goalMessage.textContent = `확인: 목표를 ${goal.length}자 입력했습니다.`;
 
     goalMessage.className = "success";
+    goalInput.setAttribute("aria-invalid", "false");
   }
 
   // 목표 종류 확인
   if (goalType.value === "") {
-    typeMessage.textContent = "목표 종류를 선택해주세요.";
+    typeMessage.textContent = "오류: 목표 종류를 선택해주세요.";
 
     typeMessage.className = "error";
+    goalType.setAttribute("aria-invalid", "true");
   } else {
-    typeMessage.textContent = `${goalType.value} 목표를 선택했습니다.`;
+    typeMessage.textContent = `확인: ${goalType.value} 목표를 선택했습니다.`;
 
     typeMessage.className = "success";
+    goalType.setAttribute("aria-invalid", "false");
   }
 
   if (useTime.checked && goalTime.value === "") {
-    timeMessage.textContent = "목표 시간을 선택해주세요. 또는 체크를 해제해주세요.";
+    timeMessage.textContent = "오류: 목표 시간을 선택하거나 시간 설정을 해제해주세요.";
+    goalTime.setAttribute("aria-invalid", "true");
   } else {
     timeMessage.textContent = "";
+    goalTime.setAttribute("aria-invalid", "false");
   }
   submitMessage.textContent = "";
 }
@@ -207,6 +214,9 @@ goalForm.addEventListener("submit", function (event) {
   if (!isFormValid()) {
     submitMessage.textContent = "입력 내용을 확인해주세요. 목표는 3자 이상, 종류는 필수이며 시간 선택 시 시간도 입력해야 합니다.";
     submitMessage.className = "error";
+    if (goalInput.value.trim().length < 3) goalInput.focus();
+    else if (!goalType.value) goalType.focus();
+    else goalTime.focus();
     return;
   }
   submitting = true;
@@ -224,6 +234,7 @@ goalForm.addEventListener("submit", function (event) {
     flowNotice.textContent = "";
     submitMessage.textContent = "목표가 등록되었습니다.";
     openTab("check");
+    backButton.focus();
   } catch (error) {
     submitMessage.textContent = "등록에 실패했습니다. 브라우저 저장 기능을 확인하고 다시 시도해주세요. 입력한 내용은 유지됩니다.";
     submitMessage.className = "error";
@@ -243,6 +254,7 @@ backButton.addEventListener("click", function () {
   flowNotice.textContent = "내용을 수정한 후 다시 확인해주세요.";
 
   flowNotice.className = "info";
+  goalInput.focus();
 });
 
 // 3단계 → 완료
@@ -262,6 +274,7 @@ completeButton.addEventListener("click", function () {
   flowNotice.textContent = "";
 
   openTab("progress");
+  saveButton.focus();
 });
 
 // 저장한 목표 목록 표시
@@ -299,7 +312,11 @@ function showHistory() {
     deleteButton.setAttribute("aria-label", `${item.goal} 기록 삭제`);
     deleteButton.addEventListener("click", function () {
       history = history.filter((savedItem) => savedItem.id !== item.id);
+      const removedIndex = filteredHistory.indexOf(item);
       showHistory();
+      const remainingButtons = historyList.querySelectorAll(".history-item button");
+      if (remainingButtons.length) remainingButtons[Math.min(removedIndex, remainingButtons.length - 1)].focus();
+      else document.querySelector(`.filter-button[data-filter="${selectedFilter}"]`).focus();
     });
     historyItem.appendChild(historyText);
     historyItem.appendChild(deleteButton);
@@ -385,6 +402,7 @@ restartButton.addEventListener("click", function () {
   inputStep.classList.add("hidden");
 
   openTab("write");
+  startButton.focus();
 });
 
 // 탭 클릭
@@ -442,3 +460,24 @@ tabButtons.forEach(function (button) {
 
 // 처음 목록 표시
 showHistory();
+
+// 11주차: 이메일 입력 형식 확인 (네트워크 전송·저장 없음)
+const emailForm = document.querySelector("#emailForm");
+const emailInput = document.querySelector("#emailInput");
+const emailMessage = document.querySelector("#emailMessage");
+emailForm.addEventListener("submit", function (event) {
+  event.preventDefault();
+  if (!emailInput.validity.valid) {
+    emailInput.setAttribute("aria-invalid", "true");
+    emailMessage.className = "error";
+    emailMessage.textContent = "오류: 올바른 이메일 주소를 입력해주세요. 예: name@example.com";
+    emailInput.focus();
+  } else {
+    emailInput.setAttribute("aria-invalid", "false");
+    emailMessage.className = "success";
+    emailMessage.textContent = "확인: 이메일 형식이 올바릅니다. 실제 신청이나 전송은 하지 않았습니다.";
+  }
+});
+emailInput.addEventListener("input", function () {
+  emailInput.setAttribute("aria-invalid", "false");
+});
