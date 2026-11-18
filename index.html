@@ -67,27 +67,63 @@
           <li>목표 입력란에 내용을 작성합니다.</li>
           <li>작성한 목표를 확인하고 하나씩 실천합니다.</li>
         </ol>
+
+        <h3>자주 묻는 질문</h3>
+        <div class="accordion" data-component="accordion">
+          <div class="accordion-item">
+            <h4>
+              <button type="button" class="accordion-button" aria-expanded="false" aria-controls="accordion-panel-1" id="accordion-button-1">
+                목표는 어떻게 작성하나요?
+              </button>
+            </h4>
+            <div id="accordion-panel-1" class="accordion-panel" role="region" aria-labelledby="accordion-button-1" hidden>
+              <p>목표 시작하기 버튼을 누른 뒤 3자 이상의 목표를 입력하고 목표 종류를 선택하면 확인 단계로 이동할 수 있습니다.</p>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <h4>
+              <button type="button" class="accordion-button" aria-expanded="false" aria-controls="accordion-panel-2" id="accordion-button-2">
+                작성한 목표를 수정할 수 있나요?
+              </button>
+            </h4>
+            <div id="accordion-panel-2" class="accordion-panel" role="region" aria-labelledby="accordion-button-2" hidden>
+              <p>목표 확인 화면에서 이전 단계 버튼을 누르면 입력한 값이 유지된 상태로 돌아가며, 수정한 내용은 다시 확인 화면에 반영됩니다.</p>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <h4>
+              <button type="button" class="accordion-button" aria-expanded="false" aria-controls="accordion-panel-3" id="accordion-button-3">
+                완료한 목표는 어디에서 확인하나요?
+              </button>
+            </h4>
+            <div id="accordion-panel-3" class="accordion-panel" role="region" aria-labelledby="accordion-button-3" hidden>
+              <p>목표를 완료한 뒤 완료한 목표 저장하기 버튼을 누르면 나의 목표 기록에서 종류별로 확인하고 삭제할 수 있습니다.</p>
+            </div>
+          </div>
+        </div>
       </section>
       <section id="record">
         <h2>오늘의 목표</h2>
 
         <p id="flowNotice" role="status" aria-live="polite"></p>
 
-        <div class="goal-tabs">
-          <button type="button" class="tab-button active" data-tab="write" aria-pressed="true">
+        <div class="goal-tabs" role="tablist" aria-label="목표 관리 단계" data-component="tabs">
+          <button type="button" id="tab-write" class="tab-button active" role="tab" data-tab="write" aria-controls="write" aria-selected="true" tabindex="0">
             목표 작성
           </button>
 
-          <button type="button" class="tab-button" data-tab="check" aria-pressed="false">
+          <button type="button" id="tab-check" class="tab-button" role="tab" data-tab="check" aria-controls="check" aria-selected="false" tabindex="-1">
             목표 확인
           </button>
 
-          <button type="button" class="tab-button" data-tab="progress" aria-pressed="false">
+          <button type="button" id="tab-progress" class="tab-button" role="tab" data-tab="progress" aria-controls="progress" aria-selected="false" tabindex="-1">
             진행 현황
           </button>
         </div>
 
-        <div id="write" class="tab-content active">
+        <div id="write" class="tab-content active" role="tabpanel" aria-labelledby="tab-write">
           <div id="startStep" class="flow-box">
             <h3>오늘의 목표를 시작해 보세요.</h3>
             <p>오늘 꼭 완료하고 싶은 목표 한 가지를 등록할 수 있습니다.</p>
@@ -148,7 +184,7 @@
           </div>
         </div>
 
-        <div id="check" class="tab-content">
+        <div id="check" class="tab-content" role="tabpanel" aria-labelledby="tab-check" hidden>
           <div class="flow-box">
             <h3>목표 확인</h3>
 
@@ -177,7 +213,7 @@
           </div>
         </div>
 
-        <div id="progress" class="tab-content">
+        <div id="progress" class="tab-content" role="tabpanel" aria-labelledby="tab-progress" hidden>
           <div class="flow-box complete-box">
             <h3>목표 완료 🎉</h3>
 

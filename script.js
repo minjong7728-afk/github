@@ -104,19 +104,17 @@ filterButtons.forEach((button) => button.addEventListener("click", () => {
 // 탭 열기
 function openTab(tabName) {
   tabButtons.forEach(function (button) {
-    button.classList.remove("active");
-    button.setAttribute("aria-pressed", String(button.dataset.tab === tabName));
-
-    if (button.dataset.tab === tabName) {
-      button.classList.add("active");
-    }
+    const selected = button.dataset.tab === tabName;
+    button.classList.toggle("active", selected);
+    button.setAttribute("aria-selected", String(selected));
+    button.tabIndex = selected ? 0 : -1;
   });
 
   tabContents.forEach(function (content) {
-    content.classList.remove("active");
+    const selected = content.id === tabName;
+    content.classList.toggle("active", selected);
+    content.hidden = !selected;
   });
-
-  document.querySelector("#" + tabName).classList.add("active");
 }
 
 // 입력값이 모두 정상인지 확인
@@ -481,3 +479,44 @@ emailForm.addEventListener("submit", function (event) {
 emailInput.addEventListener("input", function () {
   emailInput.setAttribute("aria-invalid", "false");
 });
+
+// 12주차: 재사용 가능한 탭 키보드 조작
+tabButtons.forEach(function (button, index) {
+  button.addEventListener("keydown", function (event) {
+    let nextIndex = index;
+
+    if (event.key === "ArrowRight") {
+      nextIndex = (index + 1) % tabButtons.length;
+    } else if (event.key === "ArrowLeft") {
+      nextIndex = (index - 1 + tabButtons.length) % tabButtons.length;
+    } else if (event.key === "Home") {
+      nextIndex = 0;
+    } else if (event.key === "End") {
+      nextIndex = tabButtons.length - 1;
+    } else {
+      return;
+    }
+
+    event.preventDefault();
+    tabButtons[nextIndex].focus();
+  });
+});
+
+// 12주차: 재사용 가능한 아코디언 컴포넌트
+const accordionButtons = document.querySelectorAll(".accordion-button");
+
+function toggleAccordion(button) {
+  const panelId = button.getAttribute("aria-controls");
+  const panel = document.querySelector("#" + panelId);
+  const isOpen = button.getAttribute("aria-expanded") === "true";
+
+  button.setAttribute("aria-expanded", String(!isOpen));
+  panel.hidden = isOpen;
+}
+
+accordionButtons.forEach(function (button) {
+  button.addEventListener("click", function () {
+    toggleAccordion(button);
+  });
+});
+
